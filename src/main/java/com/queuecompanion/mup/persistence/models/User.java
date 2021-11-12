@@ -1,4 +1,4 @@
-package com.plusone.mup.persistence.models;
+package com.queuecompanion.mup.persistence.models;
 
 import java.util.Objects;
 
@@ -10,6 +10,7 @@ public class User {
     private final String emailAddress;
     private final String firstName;
     private final String lastName;
+    // TODO: rework
     private final String isoCountryCode;
 
     private User(Builder builder) {
@@ -17,7 +18,6 @@ public class User {
         this.emailAddress = builder.emailAddress;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
-        // TODO ? Locale.IsoCountryCode ?
         this.isoCountryCode = builder.isoCountryCode;
     }
 
@@ -70,39 +70,46 @@ public class User {
     }
 
     // step builder - https://blog.jayway.com/2012/02/07/builder-pattern-with-a-twist/
-    static class Builder implements UsernameStep, EmailStep, FirstNameStep, LastNameStep, IsoCountryCodeStep, Build {
+    static class Builder implements UsernameStep, EmailStep, FirstNameStep, LastNameStep, Build {
         // TODO: validation (email regex, number of chars etc)
         private String username;
         private String emailAddress;
         private String firstName;
         private String lastName;
+        // TODO: rework
         private String isoCountryCode;
 
+        @Override
         public EmailStep withUsername(String username) {
             this.username = username;
             return this;
         }
 
+        @Override
         public FirstNameStep withEmailAddress(String emailAddress) {
             this.emailAddress = emailAddress;
             return this;
         }
 
+        @Override
         public LastNameStep withFirstName(String firstName) {
             this.firstName = firstName;
             return this;
         }
 
-        public IsoCountryCodeStep withLastName(String lastName) {
+        @Override
+        public Build withLastName(String lastName) {
             this.lastName = lastName;
             return this;
         }
 
+        @Override
         public Build withIsoCountryCode(String isoCountryCode) {
             this.isoCountryCode = isoCountryCode;
             return this;
         }
 
+        @Override
         public User build() {
             return new User(this);
         }
@@ -121,14 +128,11 @@ public class User {
     }
 
     interface LastNameStep {
-        IsoCountryCodeStep withLastName(String lastName);
-    }
-
-    interface IsoCountryCodeStep {
-        Build withIsoCountryCode(String isoCountryCode);
+        Build withLastName(String lastName);
     }
 
     interface Build {
+        Build withIsoCountryCode(String isoCountryCode);
         User build();
     }
 }

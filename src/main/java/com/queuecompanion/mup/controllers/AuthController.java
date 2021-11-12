@@ -1,17 +1,18 @@
-package com.plusone.mup.controllers;
+package com.queuecompanion.mup.controllers;
 
-import com.plusone.mup.dto.request.LoginRequest;
-import com.plusone.mup.dto.request.RegisterRequest;
-import com.plusone.mup.dto.response.LoginResponse;
-import com.plusone.mup.dto.response.RegisterResponse;
-import com.plusone.mup.services.AuthService;
-import com.plusone.mup.util.HttpConstants;
+import com.queuecompanion.mup.dto.request.LoginRequest;
+import com.queuecompanion.mup.dto.request.RegisterRequest;
+import com.queuecompanion.mup.services.AuthService;
+import com.queuecompanion.mup.util.HttpConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping(HttpConstants.AUTH_PATH)
 public class AuthController {
     private final AuthService authService;
 
@@ -21,15 +22,15 @@ public class AuthController {
     }
 
     @PostMapping(HttpConstants.REGISTER_PATH)
-    public ResponseEntity<RegisterResponse> register(RegisterRequest request) {
+    public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
         // TODO
-        return ResponseEntity.ok(new RegisterResponse());
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping(HttpConstants.LOGIN_PATH)
-    public ResponseEntity<LoginResponse> login(LoginRequest request) {
+    public ResponseEntity<Void> login(LoginRequest request) {
         // TODO
-        return ResponseEntity.ok(new LoginResponse());
+        return ResponseEntity.ok().build();
     }
 
     // TODO: authorize
@@ -38,4 +39,8 @@ public class AuthController {
     public ResponseEntity<Void> logout() {
         return ResponseEntity.ok().build();
     }
+
+    // TODO email confirmation
+
+    // TODO password reset
 }

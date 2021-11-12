@@ -1,4 +1,4 @@
-package com.plusone.mup;
+package com.queuecompanion.mup;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
