@@ -1,5 +1,6 @@
 package com.queuecompanion.mup.dto.request;
 
+// TODO: validate request
 public class LoginRequest {
     private final String identifier;
     private final String password;

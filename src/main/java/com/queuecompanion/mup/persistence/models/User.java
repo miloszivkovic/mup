@@ -1,13 +1,21 @@
 package com.queuecompanion.mup.persistence.models;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
 // TODO
 //   https://ppbruna.medium.com/why-you-should-not-use-lombok-f7556662e8c3 TELL DON'T ASK principle
 //   seems like an interesting read
+@Entity
+@Table(name = "users")
 public class User {
+    // TODO: if needed, introduce separate attribute as Id
+    @Id
     private final String username;
     private final String emailAddress;
+    private final String password;
     private final String firstName;
     private final String lastName;
     // TODO: rework
@@ -16,6 +24,7 @@ public class User {
     private User(Builder builder) {
         this.username = builder.username;
         this.emailAddress = builder.emailAddress;
+        this.password = builder.password;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.isoCountryCode = builder.isoCountryCode;
@@ -27,6 +36,10 @@ public class User {
 
     public String getEmailAddress() {
         return emailAddress;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getFirstName() {
@@ -57,12 +70,12 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(username, user.username) && Objects.equals(emailAddress, user.emailAddress) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(isoCountryCode, user.isoCountryCode);
+        return Objects.equals(username, user.username) && Objects.equals(emailAddress, user.emailAddress) && Objects.equals(password, user.password) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(isoCountryCode, user.isoCountryCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, emailAddress, firstName, lastName, isoCountryCode);
+        return Objects.hash(username, emailAddress, password, firstName, lastName, isoCountryCode);
     }
 
     public static UsernameStep builder() {
@@ -70,10 +83,10 @@ public class User {
     }
 
     // step builder - https://blog.jayway.com/2012/02/07/builder-pattern-with-a-twist/
-    static class Builder implements UsernameStep, EmailStep, FirstNameStep, LastNameStep, Build {
-        // TODO: validation (email regex, number of chars etc)
+    static class Builder implements UsernameStep, EmailStep, PasswordStep, FirstNameStep, LastNameStep, Build {
         private String username;
         private String emailAddress;
+        private String password;
         private String firstName;
         private String lastName;
         // TODO: rework
@@ -86,8 +99,14 @@ public class User {
         }
 
         @Override
-        public FirstNameStep withEmailAddress(String emailAddress) {
+        public PasswordStep withEmailAddress(String emailAddress) {
             this.emailAddress = emailAddress;
+            return this;
+        }
+
+        @Override
+        public FirstNameStep withPassword(String password) {
+            this.password = password;
             return this;
         }
 
@@ -115,23 +134,27 @@ public class User {
         }
     }
 
-    interface UsernameStep {
+    public interface UsernameStep {
         EmailStep withUsername(String username);
     }
 
-    interface EmailStep {
-        FirstNameStep withEmailAddress(String emailAddress);
+    public interface EmailStep {
+        PasswordStep withEmailAddress(String emailAddress);
     }
 
-    interface FirstNameStep {
+    public interface PasswordStep {
+        FirstNameStep withPassword(String password);
+    }
+
+    public interface FirstNameStep {
         LastNameStep withFirstName(String firstName);
     }
 
-    interface LastNameStep {
+    public interface LastNameStep {
         Build withLastName(String lastName);
     }
 
-    interface Build {
+    public interface Build {
         Build withIsoCountryCode(String isoCountryCode);
         User build();
     }

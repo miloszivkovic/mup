@@ -25,7 +25,7 @@ public class AuthController {
 
     @PostMapping(HttpConstants.REGISTER_PATH)
     public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
-        // TODO
+        authService.register(request);
         return ResponseEntity.ok().build();
     }
 
