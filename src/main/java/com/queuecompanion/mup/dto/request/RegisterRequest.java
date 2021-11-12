@@ -22,7 +22,6 @@ public class RegisterRequest {
     private final String password;
 
     // TODO: compare with password
-    @NotBlank(message = "Matching password is required")
     private final String matchingPassword;
 
     @NotBlank(message = "First name is required")
