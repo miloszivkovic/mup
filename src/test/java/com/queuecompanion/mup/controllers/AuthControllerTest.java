@@ -252,27 +252,87 @@ public class AuthControllerTest {
 
     @Test
     void testRegisterInvalidPasswordsDontMatch() {
+        RegisterRequest passwordsDontMatch = RegisterRequest.builder()
+                .withUsername("username")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Password1.")
+                .withMatchingPassword("Password1!")
+                .withFirstName("First")
+                .withLastName("Last")
+                .withIsoCountryCode("test")
+                .build();
 
+        ResponseEntity<Void> registerResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, passwordsDontMatch, Void.class);
+        assertEquals(HttpStatus.BAD_REQUEST, registerResponse.getStatusCode());
     }
 
     @Test
-    void testRegisterInvalidFirstName() {
+    void testRegisterInvalidFirstNameNull() {
+        RegisterRequest firstNameNull = RegisterRequest.builder()
+                .withUsername("username")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Qztxcrvh1.!")
+                .withMatchingPassword("Qztxcrvh1.!")
+                .withFirstName(null)
+                .withLastName("Last")
+                .withIsoCountryCode("test")
+                .build();
 
+        ResponseEntity<Void> registerResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, firstNameNull, Void.class);
+        assertEquals(HttpStatus.BAD_REQUEST, registerResponse.getStatusCode());
     }
 
     @Test
-    void testRegisterInvalidLastName() {
+    void testRegisterInvalidFirstNameTooLong() {
+        RegisterRequest firstNameTooLong = RegisterRequest.builder()
+                .withUsername("username")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Qztxcrvh1.!")
+                .withMatchingPassword("Qztxcrvh1.!")
+                .withFirstName("FirstNameTooLongFirstNameTooLongFirstNameTooLong")
+                .withLastName("Last")
+                .withIsoCountryCode("test")
+                .build();
 
+        ResponseEntity<Void> registerResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, firstNameTooLong, Void.class);
+        assertEquals(HttpStatus.BAD_REQUEST, registerResponse.getStatusCode());
+    }
+
+    @Test
+    void testRegisterInvalidLastNameNull() {
+        RegisterRequest lastNameNull = RegisterRequest.builder()
+                .withUsername("username")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Qztxcrvh1.!")
+                .withMatchingPassword("Qztxcrvh1.!")
+                .withFirstName("First")
+                .withLastName(null)
+                .withIsoCountryCode("test")
+                .build();
+
+        ResponseEntity<Void> registerResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, lastNameNull, Void.class);
+        assertEquals(HttpStatus.BAD_REQUEST, registerResponse.getStatusCode());
+    }
+
+    @Test
+    void testRegisterInvalidLastNameTooLong() {
+        RegisterRequest lastNameTooLong = RegisterRequest.builder()
+                .withUsername("username")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Qztxcrvh1.!")
+                .withMatchingPassword("Qztxcrvh1.!")
+                .withFirstName("First")
+                .withLastName("LastNameTooLongLastNameTooLongLastNameTooLong")
+                .withIsoCountryCode("test")
+                .build();
+
+        ResponseEntity<Void> registerResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, lastNameTooLong, Void.class);
+        assertEquals(HttpStatus.BAD_REQUEST, registerResponse.getStatusCode());
     }
 
     @Test
     void testRegisterInvalidCountry() {
-
-    }
-
-    @Test
-    void testRegisterPasswordDoesntMatch() {
-
+        // TODO once I've figured out things regarding country codes etc
     }
 
     @Test
@@ -282,14 +342,14 @@ public class AuthControllerTest {
 
     @Test
     void testLoginWithUsernameHappyPath() {
-        LoginRequest loginRequest = new LoginRequest("username", "password");
+        LoginRequest loginRequest = new LoginRequest("username", "Qztxcrvh1.!");
         ResponseEntity<Void> loginResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.LOGIN_PATH, loginRequest, Void.class);
         assertEquals(HttpStatus.OK, loginResponse.getStatusCode());
     }
 
     @Test
     void testLoginWithEmailHappyPath() {
-        LoginRequest loginRequest = new LoginRequest("test@queuecompanion.com", "password");
+        LoginRequest loginRequest = new LoginRequest("test@queuecompanion.com", "Qztxcrvh1.!");
         ResponseEntity<Void> loginResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.LOGIN_PATH, loginRequest, Void.class);
         assertEquals(HttpStatus.OK, loginResponse.getStatusCode());
     }
@@ -301,11 +361,6 @@ public class AuthControllerTest {
 
     @Test
     void testLoginEmailAddressNotFound() {
-
-    }
-
-    @Test
-    void testLoginInvalidPassword() {
 
     }
 

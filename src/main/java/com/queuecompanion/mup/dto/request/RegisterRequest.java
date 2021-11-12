@@ -2,18 +2,20 @@ package com.queuecompanion.mup.dto.request;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.queuecompanion.mup.dto.validators.PasswordMatches;
 import com.queuecompanion.mup.dto.validators.ValidPassword;
 import com.queuecompanion.mup.dto.validators.ValidUsername;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 
 @JsonDeserialize(builder = RegisterRequest.Builder.class)
+@PasswordMatches
 public class RegisterRequest {
     @ValidUsername
     private final String username;
 
-    // TODO: this doesnt work
     @NotBlank(message = "Email address is required")
     @Email(message = "Invalid email address input")
     private final String emailAddress;
@@ -21,13 +23,14 @@ public class RegisterRequest {
     @ValidPassword
     private final String password;
 
-    // TODO: compare with password
     private final String matchingPassword;
 
     @NotBlank(message = "First name is required")
+    @Max(30)
     private final String firstName;
 
     @NotBlank(message = "Last name is required")
+    @Max(30)
     private final String lastName;
 
     // TODO: rework
