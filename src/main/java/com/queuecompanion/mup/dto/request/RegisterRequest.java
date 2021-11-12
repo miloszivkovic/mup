@@ -2,14 +2,35 @@ package com.queuecompanion.mup.dto.request;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.queuecompanion.mup.dto.validators.ValidPassword;
+import com.queuecompanion.mup.dto.validators.ValidUsername;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @JsonDeserialize(builder = RegisterRequest.Builder.class)
 public class RegisterRequest {
+    @ValidUsername
     private final String username;
+
+    // TODO: this doesnt work
+    @NotBlank(message = "Email address is required")
+    @Email(message = "Invalid email address input")
     private final String emailAddress;
+
+    @ValidPassword
     private final String password;
+
+    // TODO: compare with password
+    @NotBlank(message = "Matching password is required")
+    private final String matchingPassword;
+
+    @NotBlank(message = "First name is required")
     private final String firstName;
+
+    @NotBlank(message = "Last name is required")
     private final String lastName;
+
     // TODO: rework
     private final String isoCountryCode;
 
@@ -17,6 +38,7 @@ public class RegisterRequest {
         this.username = builder.username;
         this.emailAddress = builder.emailAddress;
         this.password = builder.password;
+        this.matchingPassword = builder.matchingPassword;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.isoCountryCode = builder.isoCountryCode;
@@ -32,6 +54,10 @@ public class RegisterRequest {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getMatchingPassword() {
+        return matchingPassword;
     }
 
     public String getFirstName() {

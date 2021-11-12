@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(HttpConstants.AUTH_PATH)
 public class AuthController {
@@ -22,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping(HttpConstants.REGISTER_PATH)
-    public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
         // TODO
         return ResponseEntity.ok().build();
     }
