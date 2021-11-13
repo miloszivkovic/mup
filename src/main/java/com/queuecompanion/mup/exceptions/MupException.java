@@ -19,4 +19,8 @@ public class MupException extends RuntimeException {
         super(message, cause);
         this.status = status;
     }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
 }

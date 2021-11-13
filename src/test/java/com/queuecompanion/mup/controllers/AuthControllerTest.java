@@ -10,6 +10,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
                 "management.server.port=9042"
         }
 )
+// TODO: instead of this, maybe implement generateRandomUsername(), generateRandomEmail() and use those - tests would be faster
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class AuthControllerTest {
     private static final String AUTH_URL = "http://localhost:8042" + HttpConstants.AUTH_PATH;
 
@@ -50,7 +53,31 @@ public class AuthControllerTest {
 
     @Test
     void testRegisterUsernameAlreadyTaken() {
+        // register successfully
+        RegisterRequest firstRequest = RegisterRequest.builder()
+                .withUsername("username")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Qztxcrvh1.!")
+                .withMatchingPassword("Qztxcrvh1.!")
+                .withFirstName("First")
+                .withLastName("Last")
+                .withIsoCountryCode("test")
+                .build();
+        ResponseEntity<Void> firstResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, firstRequest, Void.class);
+        assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
 
+        // try again with the same username
+        RegisterRequest secondRequest = RegisterRequest.builder()
+                .withUsername("username")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Qztxcrvh1.!")
+                .withMatchingPassword("Qztxcrvh1.!")
+                .withFirstName("First")
+                .withLastName("Last")
+                .withIsoCountryCode("test")
+                .build();
+        ResponseEntity<Void> secondResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, secondRequest, Void.class);
+        assertEquals(HttpStatus.BAD_REQUEST, secondResponse.getStatusCode());
     }
 
     @Test
