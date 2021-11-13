@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 // TODO: RANDOM_PORT to avoid conflicts
 // TODO: can you use same web server for all test classes?
@@ -24,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         }
 )
 // TODO: instead of this, maybe implement generateRandomUsername(), generateRandomEmail() and use those - tests would be faster
+
+// TODO: refactor a bit, with bunch of repeated Register / Login requests, you'll mess up something for sure
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class AuthControllerTest {
     private static final String AUTH_URL = "http://localhost:8042" + HttpConstants.AUTH_PATH;
@@ -82,7 +84,31 @@ public class AuthControllerTest {
 
     @Test
     void testRegisterEmailAlreadyTaken() {
+// register successfully
+        RegisterRequest firstRequest = RegisterRequest.builder()
+                .withUsername("username")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Qztxcrvh1.!")
+                .withMatchingPassword("Qztxcrvh1.!")
+                .withFirstName("First")
+                .withLastName("Last")
+                .withIsoCountryCode("test")
+                .build();
+        ResponseEntity<Void> firstResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, firstRequest, Void.class);
+        assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
 
+        // try again with the same email
+        RegisterRequest secondRequest = RegisterRequest.builder()
+                .withUsername("newusername")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Qztxcrvh1.!")
+                .withMatchingPassword("Qztxcrvh1.!")
+                .withFirstName("First")
+                .withLastName("Last")
+                .withIsoCountryCode("test")
+                .build();
+        ResponseEntity<Void> secondResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, secondRequest, Void.class);
+        assertEquals(HttpStatus.BAD_REQUEST, secondResponse.getStatusCode());
     }
 
     @Test
@@ -362,38 +388,92 @@ public class AuthControllerTest {
         // TODO once I've figured out things regarding country codes etc
     }
 
-    @Test
-    void testRegisterAlreadyLoggedIn() {
-        // this should be fine right? we just register new user and ignore the session id header
-    }
-
+    // TODO: check if session is returned in response
     @Test
     void testLoginWithUsernameHappyPath() {
+        // register
+        RegisterRequest firstRequest = RegisterRequest.builder()
+                .withUsername("username")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Qztxcrvh1.!")
+                .withMatchingPassword("Qztxcrvh1.!")
+                .withFirstName("First")
+                .withLastName("Last")
+                .withIsoCountryCode("test")
+                .build();
+        ResponseEntity<Void> firstResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, firstRequest, Void.class);
+        assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
+
+        // login
         LoginRequest loginRequest = new LoginRequest("username", "Qztxcrvh1.!");
         ResponseEntity<Void> loginResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.LOGIN_PATH, loginRequest, Void.class);
         assertEquals(HttpStatus.OK, loginResponse.getStatusCode());
+
+        String cookie = new String(loginResponse.getHeaders().get("Set-Cookie").get(0).getBytes());
+        assertTrue(cookie.contains("session-id"));
+        assertTrue(cookie.contains("Secure"));
+        assertTrue(cookie.contains("HttpOnly"));
     }
 
     @Test
     void testLoginWithEmailHappyPath() {
+        // register
+        RegisterRequest firstRequest = RegisterRequest.builder()
+                .withUsername("username")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Qztxcrvh1.!")
+                .withMatchingPassword("Qztxcrvh1.!")
+                .withFirstName("First")
+                .withLastName("Last")
+                .withIsoCountryCode("test")
+                .build();
+        ResponseEntity<Void> firstResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, firstRequest, Void.class);
+        assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
+
+        // login
         LoginRequest loginRequest = new LoginRequest("test@queuecompanion.com", "Qztxcrvh1.!");
         ResponseEntity<Void> loginResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.LOGIN_PATH, loginRequest, Void.class);
         assertEquals(HttpStatus.OK, loginResponse.getStatusCode());
+
+        String cookie = new String(loginResponse.getHeaders().get("Set-Cookie").get(0).getBytes());
+        assertTrue(cookie.contains("session-id"));
+        assertTrue(cookie.contains("Secure"));
+        assertTrue(cookie.contains("HttpOnly"));
     }
 
     @Test
     void testLoginUsernameNotFound() {
-
+        LoginRequest loginRequest = new LoginRequest("username", "Qztxcrvh1.!");
+        ResponseEntity<Void> loginResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.LOGIN_PATH, loginRequest, Void.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, loginResponse.getStatusCode());
     }
 
     @Test
     void testLoginEmailAddressNotFound() {
-
+        LoginRequest loginRequest = new LoginRequest("test@queuecompanion.com", "Qztxcrvh1.!");
+        ResponseEntity<Void> loginResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.LOGIN_PATH, loginRequest, Void.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, loginResponse.getStatusCode());
     }
 
     @Test
-    void testLoginAlreadyLoggedIn() {
-        // this should be fine right? we just log him in again, ignoring the sessionId header, and return new session
+    void testLoginWrongPassword() {
+        // register
+        RegisterRequest firstRequest = RegisterRequest.builder()
+                .withUsername("username")
+                .withEmailAddress("test@queuecompanion.com")
+                .withPassword("Qztxcrvh1.!")
+                .withMatchingPassword("Qztxcrvh1.!")
+                .withFirstName("First")
+                .withLastName("Last")
+                .withIsoCountryCode("test")
+                .build();
+        ResponseEntity<Void> firstResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.REGISTER_PATH, firstRequest, Void.class);
+        assertEquals(HttpStatus.OK, firstResponse.getStatusCode());
+
+        // login
+        LoginRequest loginRequest = new LoginRequest("test@queuecompanion.com", "wrongpassword");
+        ResponseEntity<Void> loginResponse = restTemplate.postForEntity(AUTH_URL + HttpConstants.LOGIN_PATH, loginRequest, Void.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, loginResponse.getStatusCode());
     }
 
     @Test
