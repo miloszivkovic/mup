@@ -23,6 +23,7 @@ public class AuthController {
         this.authService = authService;
     }
 
+    // TODO: https://www.codejava.net/frameworks/spring-boot/connect-to-postgresql-database-examples
     @PostMapping(HttpConstants.REGISTER_PATH)
     public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
         authService.register(request);

@@ -13,13 +13,25 @@ import java.util.Objects;
 public class User {
     // TODO: if needed, introduce separate attribute as Id
     @Id
-    private final String username;
-    private final String emailAddress;
-    private final String password;
-    private final String firstName;
-    private final String lastName;
+    private String username;
+    private String emailAddress;
+    private String password;
+    private String firstName;
+    private String lastName;
     // TODO: rework
-    private final String isoCountryCode;
+    private String isoCountryCode;
+
+    protected User() {
+    }
+
+    public User(String username, String emailAddress, String password, String firstName, String lastName, String isoCountryCode) {
+        this.username = username;
+        this.emailAddress = emailAddress;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.isoCountryCode = isoCountryCode;
+    }
 
     private User(Builder builder) {
         this.username = builder.username;
@@ -34,24 +46,48 @@ public class User {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getEmailAddress() {
         return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     public String getPassword() {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getFirstName() {
         return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
         return lastName;
     }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public String getIsoCountryCode() {
         return isoCountryCode;
+    }
+
+    public void setIsoCountryCode(String isoCountryCode) {
+        this.isoCountryCode = isoCountryCode;
     }
 
     @Override

@@ -7,8 +7,8 @@ import com.queuecompanion.mup.dto.validators.ValidPassword;
 import com.queuecompanion.mup.dto.validators.ValidUsername;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @JsonDeserialize(builder = RegisterRequest.Builder.class)
 @PasswordMatches
@@ -26,11 +26,11 @@ public class RegisterRequest {
     private final String matchingPassword;
 
     @NotBlank(message = "First name is required")
-    @Max(30)
+    @Size(max = 30)
     private final String firstName;
 
     @NotBlank(message = "Last name is required")
-    @Max(30)
+    @Size(max = 30)
     private final String lastName;
 
     // TODO: rework

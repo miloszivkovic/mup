@@ -387,8 +387,6 @@ public class AuthControllerTest {
 
     @Test
     void testLogoutUnauthorized() {
-        // sessionId header missing or expired/invalid
+        // sessionId header missing/expired/invalid
     }
-
-    // TODO: non-happy paths
 }

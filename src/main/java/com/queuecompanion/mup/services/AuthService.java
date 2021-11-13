@@ -1,6 +1,5 @@
 package com.queuecompanion.mup.services;
 
-import com.queuecompanion.mup.dto.request.LoginRequest;
 import com.queuecompanion.mup.dto.request.RegisterRequest;
 import com.queuecompanion.mup.exceptions.MupException;
 import com.queuecompanion.mup.persistence.models.User;
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +19,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthService(IUserDao userDao, Pbkdf2PasswordEncoder passwordEncoder) {
+    public AuthService(IUserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
     }
@@ -32,7 +30,7 @@ public class AuthService {
             throw new MupException("Username is already taken", HttpStatus.BAD_REQUEST);
         }
 
-        if (userDao.findByEmail(registerRequest.getEmailAddress()) != null) {
+        if (userDao.findByEmailAddress(registerRequest.getEmailAddress()) != null) {
             throw new MupException("Email address is already taken", HttpStatus.BAD_REQUEST);
         }
 
