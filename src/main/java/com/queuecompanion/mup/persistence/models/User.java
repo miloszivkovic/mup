@@ -1,5 +1,6 @@
 package com.queuecompanion.mup.persistence.models;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -13,18 +14,29 @@ import java.util.Objects;
 public class User {
     // TODO: if needed, introduce separate attribute as Id
     @Id
+    @Column(name = "username")
     private String username;
+
+    @Column(name = "email_address")
     private String emailAddress;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
+
     // TODO: rework
+    @Column(name = "iso_country_code")
     private String isoCountryCode;
 
     protected User() {
     }
 
-    public User(String username, String emailAddress, String password, String firstName, String lastName, String isoCountryCode) {
+    public User(String test, String username, String emailAddress, String password, String firstName, String lastName, String isoCountryCode) {
         this.username = username;
         this.emailAddress = emailAddress;
         this.password = password;
