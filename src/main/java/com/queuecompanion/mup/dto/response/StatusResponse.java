@@ -1,4 +1,4 @@
-package com.plusone.mup.dto.response;
+package com.queuecompanion.mup.dto.response;
 
 public class StatusResponse {
     private final long uptimeMillis;

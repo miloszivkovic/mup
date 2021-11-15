@@ -1,8 +1,8 @@
-package com.plusone.mup.controllers;
+package com.queuecompanion.mup.controllers;
 
-import com.plusone.mup.dto.response.StatusResponse;
-import com.plusone.mup.services.StatusService;
-import com.plusone.mup.util.HttpConstants;
+import com.queuecompanion.mup.dto.response.StatusResponse;
+import com.queuecompanion.mup.services.StatusService;
+import com.queuecompanion.mup.util.HttpConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
