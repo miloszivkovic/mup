@@ -36,15 +36,6 @@ public class User {
     protected User() {
     }
 
-    public User(String test, String username, String emailAddress, String password, String firstName, String lastName, String isoCountryCode) {
-        this.username = username;
-        this.emailAddress = emailAddress;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.isoCountryCode = isoCountryCode;
-    }
-
     private User(Builder builder) {
         this.username = builder.username;
         this.emailAddress = builder.emailAddress;
